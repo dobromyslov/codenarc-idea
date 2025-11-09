@@ -1,3 +1,4 @@
+// codenarc-disable
 package org.codenarc.idea.gen
 
 import com.intellij.codeHighlighting.HighlightDisplayLevel
@@ -117,6 +118,7 @@ class RuleInspectionsGenerator {
             'convention',                   // common
             'design',                       // common
             'dry',                          // common, often disabled in specs
+            'enhanced',                     // common
             'exceptions',                   // common
             'formatting',                   // common, more graceful line length, fixed regex for map literals
             'generic',                      // common
@@ -124,6 +126,7 @@ class RuleInspectionsGenerator {
             'groovyism',                    // common, come explicit call checks disabled
             'imports',                      // common, wildcard imports often allowed but not here
             'jdbc',                         // common
+            'jenkins',                      // common
             'junit',                        // common
             'logging',                      // common
             'naming',                       // common
@@ -376,7 +379,7 @@ class RuleInspectionsGenerator {
         }
 
         for (String imported in imports.sort()) {
-            printWriter.println("        import $imported;")
+            printWriter.println("import $imported;")
         }
 
         printWriter.println """
@@ -396,7 +399,7 @@ class RuleInspectionsGenerator {
             public String getRuleset() {
                 return GROUP;
             }
-        """
+        """.stripIndent()
 
         for (MetaProperty prop : Helpers.proxyableProps(ruleClassInstance)) {
             String getter;
@@ -415,21 +418,21 @@ class RuleInspectionsGenerator {
             String propTypeString = prop.type.isPrimitive() || prop.type.package.equals(String.package) ? prop.type.simpleName : prop.type.name
 
             printWriter.println """
-            public void $setter(${propTypeString} value) {
-                getRule().$setter(value);
-            }
-            
-            public ${propTypeString} $getter() {
-                return getRule().$getter();
-            }
+    public void $setter(${propTypeString} value) {
+        getRule().$setter(value);
+    }
+    
+    public ${propTypeString} $getter() {
+        return getRule().$getter();
+    }
             """
         }
 
         String emptyListQuickFixImplementation = '''
-            @Override
-            protected @NotNull Collection<LocalQuickFix> getQuickFixesFor(Violation violation, PsiElement violatingElement) {
-                return Collections.emptyList();
-            }
+    @Override
+    protected @NotNull Collection<LocalQuickFix> getQuickFixesFor(Violation violation, PsiElement violatingElement) {
+        return Collections.emptyList();
+    }
         '''
 
         String customCode = """

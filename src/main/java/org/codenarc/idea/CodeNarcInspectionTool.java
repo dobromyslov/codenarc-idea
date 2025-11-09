@@ -34,6 +34,7 @@ import com.intellij.util.ThreeState;
 import com.intellij.util.xmlb.XmlSerializationException;
 import it.unimi.dsi.fastutil.Hash;
 import it.unimi.dsi.fastutil.objects.ObjectOpenCustomHashSet;
+import org.codenarc.idea.disablerules.DisabledRulesService;
 import org.codenarc.idea.ui.Helpers;
 import org.codenarc.rule.AbstractRule;
 import org.codenarc.rule.Violation;
@@ -47,8 +48,8 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.PropertyKey;
 
 import javax.swing.*;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.MissingResourceException;
 import java.util.Objects;
@@ -285,10 +286,10 @@ public abstract class CodeNarcInspectionTool<R extends AbstractRule> extends Loc
             }
         });
 
-        Set<InspectionSuppressor> suppressors = getSuppressors(element);
+        Set<InspectionSuppressor> suppressors = new HashSet<>(getSuppressors(element));
         final PsiLanguageInjectionHost injectionHost = InjectedLanguageManager.getInstance(element.getProject()).getInjectionHost(element);
         if (injectionHost != null) {
-            Set<InspectionSuppressor> injectionHostSuppressors = getSuppressors(injectionHost);
+            Set<InspectionSuppressor> injectionHostSuppressors = new HashSet<>(getSuppressors(injectionHost));
             for (InspectionSuppressor suppressor : injectionHostSuppressors) {
                 addAllSuppressActions(fixes, injectionHost, suppressor, ThreeState.YES, getAlternativeID());
             }
@@ -418,7 +419,10 @@ public abstract class CodeNarcInspectionTool<R extends AbstractRule> extends Loc
         final TextRange violatingRange = extractViolatingRange(document, violation);
         final PsiElement violatingElement = extractViolatingElement(file, violatingRange);
 
-        if (violatingElement == null || isSuppressedFor(violatingElement)) {
+        if (
+            violatingElement == null || isSuppressedFor(violatingElement) ||
+                DisabledRulesService.getInstance().isRuleDisabled(violation.getRule(), file, violation.getLineNumber())
+        ) {
             return null;
         }
 

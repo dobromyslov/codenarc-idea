@@ -1,6 +1,5 @@
 package org.codenarc.idea.inspections.imports;
 
-import com.intellij.codeInsight.daemon.impl.quickfix.DeleteElementFix;
 import com.intellij.codeInspection.CleanupLocalInspectionTool;
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.psi.PsiElement;
@@ -33,7 +32,7 @@ public class UnusedImportInspectionTool extends CodeNarcInspectionTool<UnusedImp
 
     @Override
     protected @NotNull Collection<LocalQuickFix> getQuickFixesFor(Violation violation, PsiElement violatingElement) {
-        return Collections.singleton(new DeleteElementFix(violatingElement));
+        return Collections.emptyList();
     }
 
 }

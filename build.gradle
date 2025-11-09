@@ -1,5 +1,5 @@
 plugins {
-    id 'org.jetbrains.intellij' version '1.15.0'
+    id 'org.jetbrains.intellij.platform' version '2.10.4'
     id 'java'
     id 'idea'
     id 'groovy'
@@ -8,20 +8,23 @@ plugins {
 
 if (!project.hasProperty('publishPluginChannels')) ext.publishPluginChannels = ''
 if (!project.hasProperty('publishPluginToken')) ext.publishPluginToken = '**UNDEFINED**'
-if (!project.hasProperty('ideVersion')) ext.ideVersion = 'IC-2023.2'
+if (!project.hasProperty('ideVersion')) ext.ideVersion = 'IC-2025.2'
 
 wrapper {
-    gradleVersion = '8.0.2'
+    gradleVersion = '9.2.0'
     distributionType = Wrapper.DistributionType.ALL
     // Checksums are found here: https://gradle.org/release-checksums/
     distributionSha256Sum = '47a5bfed9ef814f90f8debcbbb315e8e7c654109acd224595ea39fca95c5d4da'
 }
 
-group 'org.codenarc.idea'
-version "${pluginVersion}"
+group = 'org.codenarc.idea'
+version = "${pluginVersion}"
 
 repositories {
     mavenCentral()
+    intellijPlatform {
+        defaultRepositories()
+    }
 }
 
 idea {
@@ -46,7 +49,21 @@ configurations {
     generatorImplementation.extendsFrom compile, implementation, runtimeOnly
 }
 
+configurations.all {
+    resolutionStrategy {
+        // Force a single Groovy version across all modules
+        force 'org.apache.groovy:groovy:4.0.29'
+        force 'org.apache.groovy:groovy-xml:4.0.29'
+    }
+}
+
 dependencies {
+    intellijPlatform {
+        intellijIdea '2025.2.4'
+        bundledPlugin 'com.intellij.java'
+        bundledPlugin 'org.intellij.groovy'
+        //plugin 'Gradle' '251.29188.18'
+    }
     compileOnly( 'org.apache.groovy:groovy') {
         version {
             strictly "$groovyVersion"
@@ -92,6 +109,7 @@ String idePlatformVersion = "${ideVersion}"
 
 logger.lifecycle("Using IDE version $idePlatformVersion")
 
+/*
 intellij {
     pluginName = 'CodeNarc'
 
@@ -100,6 +118,7 @@ intellij {
     version = idePlatformVersion
     instrumentCode = false
 }
+ */
 
 publishPlugin {
     token = publishPluginToken
@@ -112,22 +131,25 @@ runIde {
     jvmArgs "-Xmx2g"
 }
 
+/*
 runPluginVerifier {
     ideVersions = [
             idePlatformVersion
     ]
 }
+ */
 
+/*
 patchPluginXml {
-    version "${pluginVersion}"
+    version = "${pluginVersion}"
     sinceBuild = '223.7571.182'
     untilBuild = null
     changeNotes = file('changelog.html').text
     pluginDescription = file('description.html').text
 }
-
+*/
 application {
-    mainClassName = 'org.codenarc.idea.gen.RuleInspectionsGenerator'
+    mainClass = 'org.codenarc.idea.gen.RuleInspectionsGenerator'
 }
 
 run {
