@@ -1,4 +1,3 @@
-// codenarc-disable
 package org.codenarc.idea.gen
 
 import com.intellij.codeHighlighting.HighlightDisplayLevel
@@ -140,8 +139,8 @@ class RuleInspectionsGenerator {
     private final static Pattern RULE_CLASS_PATTERN = Pattern.compile(".*class='(.*?)'.*")
     private final static Pattern RULE_GROUP_PATTERN = Pattern.compile('.*/([^.]*)\\.xml')
 
-    private final String ruleClass;
-    private final String group;
+    private final String ruleClass
+    private final String group
 
     RuleInspectionsGenerator(String ruleClass, String group) {
         this.ruleClass = ruleClass
@@ -326,9 +325,9 @@ class RuleInspectionsGenerator {
     @SuppressWarnings(['CodeNarc.TrailingWhitespace', 'CodeNarc.AbcMetric'])
     private InspectionDescriptor generateSingleClassFile(String projectRoot) {
         StringWriter sw = new StringWriter()
-        PrintWriter printWriter = new PrintWriter(sw);
+        PrintWriter printWriter = new PrintWriter(sw)
 
-        Class<?> ruleClassInstance = Helpers.getRuleClassInstance(ruleClass);
+        Class<?> ruleClassInstance = Helpers.getRuleClassInstance(ruleClass)
         AbstractRule ruleInstance = ruleClassInstance.newInstance() as AbstractRule
 
         if (ruleInstance.compilerPhase > 3) {
@@ -382,6 +381,7 @@ class RuleInspectionsGenerator {
             printWriter.println("import $imported;")
         }
 
+        // codenarc-disable LineLength
         printWriter.println """
         @Generated("You can customize this class at the end of the file or remove this annotation to skip regeneration completely")
         public class $newClassName extends CodeNarcInspectionTool<$ruleClassInstance.simpleName> ${ ruleClassInstance in CLEANUP_AVAILABLE ? 'implements CleanupLocalInspectionTool ' : '' }{
@@ -400,22 +400,25 @@ class RuleInspectionsGenerator {
                 return GROUP;
             }
         """.stripIndent()
+        // codenarc-enable LineLength
 
         for (MetaProperty prop : Helpers.proxyableProps(ruleClassInstance)) {
-            String getter;
-            String setter;
+            String getter
+            String setter
 
             if (prop instanceof MetaBeanProperty) {
-                MetaBeanProperty beanProp = (MetaBeanProperty) prop;
-                getter = beanProp.getter.name;
-                setter = beanProp.setter.name;
+                MetaBeanProperty beanProp = (MetaBeanProperty) prop
+                getter = beanProp.getter.name
+                setter = beanProp.setter.name
             } else {
-                String capitalizedPropName = StringUtils.capitalize(prop.name);
-                getter = 'get' + capitalizedPropName;
-                setter = 'set' + capitalizedPropName;
+                String capitalizedPropName = StringUtils.capitalize(prop.name)
+                getter = 'get' + capitalizedPropName
+                setter = 'set' + capitalizedPropName
             }
 
-            String propTypeString = prop.type.isPrimitive() || prop.type.package.equals(String.package) ? prop.type.simpleName : prop.type.name
+            String propTypeString = prop.type.isPrimitive() || prop.type.package == String.package
+                ? prop.type.simpleName
+                : prop.type.name
 
             printWriter.println """
     public void $setter(${propTypeString} value) {
@@ -457,7 +460,7 @@ class RuleInspectionsGenerator {
         if (newSourceFile.exists()) {
             String existingFileText = newSourceFile.text
 
-            descriptor.hasQuickFix = !existingFileText.replaceAll(/\s+/, ' ')
+            descriptor.hasQuickFix = !existingFileText.replaceAll(/\s+/, ' ') //
                     .contains(emptyListQuickFixImplementation.replaceAll(/\s+/, ' ')) && !existingFileText.contains('TODO')
 
             List<String> pathsToTestClass = [
