@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Collections;
 import javax.annotation.Generated;
 import org.codenarc.idea.CodeNarcInspectionTool;
+import org.codenarc.idea.quickfix.AddExplicitReturnQuickFix;
 import org.codenarc.rule.Violation;
 import org.codenarc.rule.convention.ImplicitReturnStatementRule;
 import org.jetbrains.annotations.NotNull;
@@ -50,7 +51,7 @@ public class ImplicitReturnStatementInspectionTool extends CodeNarcInspectionToo
 
     @Override
     protected @NotNull Collection<LocalQuickFix> getQuickFixesFor(Violation violation, PsiElement violatingElement) {
-        return Collections.emptyList();
+        return Collections.singleton(new AddExplicitReturnQuickFix());
     }
 
 }

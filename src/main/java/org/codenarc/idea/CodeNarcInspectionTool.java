@@ -70,9 +70,12 @@ public abstract class CodeNarcInspectionTool<R extends AbstractRule> extends Loc
     protected static final String GRADLE_FILES = "*.gradle";
 
     private static final Logger LOG = Logger.getInstance(CodeNarcInspectionTool.class);
-    private static final Key<CachedValue<SourceString>> SOURCE_AS_STRING_CACHE_KEY = Key.create("CODENARC_SOURCE_AS_STRING");
-    private static final Key<CachedValue<Boolean>> HAS_SYNTAX_ERRORS_CACHE_KEY = Key.create("CODENARC_HAS_SYNTAX_ERRORS");
-    private static final Key<ParameterizedCachedValue<ProblemDescriptor[], AbstractRule>> VIOLATIONS_CACHE_KEY = Key.create("CODENARC_VIOLATIONS");
+    private static final Key<CachedValue<SourceString>> SOURCE_AS_STRING_CACHE_KEY =
+        Key.create("CODENARC_SOURCE_AS_STRING");
+    private static final Key<CachedValue<Boolean>> HAS_SYNTAX_ERRORS_CACHE_KEY =
+        Key.create("CODENARC_HAS_SYNTAX_ERRORS");
+    private static final Key<ParameterizedCachedValue<ProblemDescriptor[], AbstractRule>> VIOLATIONS_CACHE_KEY =
+        Key.create("CODENARC_VIOLATIONS");
     private final R rule;
     private final ResourceBundle bundle = ResourceBundle.getBundle(BASE_MESSAGES_BUNDLE);
     private final String description;
@@ -138,10 +141,13 @@ public abstract class CodeNarcInspectionTool<R extends AbstractRule> extends Loc
 
     private String getRuleDescriptionOrDefaultMessage(final AbstractRule rule) {
         String resourceKey = rule.getName() + ".description.html";
-        return getResourceBundleString(resourceKey, "No description provided for rule named [" + rule.getName() + "]");
+        return "[" + rule.getName() + "] " + getResourceBundleString(resourceKey, "No description provided");
     }
 
-    private String getResourceBundleString(@PropertyKey(resourceBundle = BASE_MESSAGES_BUNDLE) String resourceKey, String defaultString) {
+    private String getResourceBundleString(
+        @PropertyKey(resourceBundle = BASE_MESSAGES_BUNDLE) String resourceKey,
+        String defaultString
+    ) {
         String string;
         try {
             string = bundle.getString(resourceKey);
@@ -207,7 +213,11 @@ public abstract class CodeNarcInspectionTool<R extends AbstractRule> extends Loc
 
     @Override
     @SuppressWarnings("unchecked")
-    public ProblemDescriptor[] checkFile(@NotNull final PsiFile file, @NotNull final InspectionManager manager, final boolean isOnTheFly) {
+    public ProblemDescriptor[] checkFile(
+        @NotNull final PsiFile file,
+        @NotNull final InspectionManager manager,
+        final boolean isOnTheFly
+    ) {
         if (!file.getFileType().getName().equalsIgnoreCase("groovy")) {
             return null;
         }
@@ -219,7 +229,8 @@ public abstract class CodeNarcInspectionTool<R extends AbstractRule> extends Loc
             return null;
         }
 
-        ParameterizedCachedValue<ProblemDescriptor[], AbstractRule> cachedViolations = file.getUserData(VIOLATIONS_CACHE_KEY);
+        ParameterizedCachedValue<ProblemDescriptor[], AbstractRule> cachedViolations = file
+            .getUserData(VIOLATIONS_CACHE_KEY);
 
         if (cachedViolations != null) {
             return null;
@@ -228,13 +239,21 @@ public abstract class CodeNarcInspectionTool<R extends AbstractRule> extends Loc
         // file.putUserData(VIOLATIONS_CACHE_KEY, cachedViolations);
 
         cachedViolations = cachedValuesManager.createParameterizedCachedValue(r -> {
-            final SourceCode code = computeCachedDataIfAbsent(file, cachedValuesManager, SOURCE_AS_STRING_CACHE_KEY, () -> {
-                if (file.getText() == null || "".equals(file.getText())) {
-                    return null;
+            final SourceCode code = computeCachedDataIfAbsent(
+                file,
+                cachedValuesManager,
+                SOURCE_AS_STRING_CACHE_KEY, () -> {
+                    if (file.getText() == null || file.getText().isEmpty()) {
+                        return null;
+                    }
+                    VirtualFile virtualFile = file.getVirtualFile();
+                    return new SourceString(
+                        file.getText(),
+                        virtualFile == null ? null : virtualFile.getCanonicalPath(),
+                        file.getName()
+                    );
                 }
-                VirtualFile virtualFile = file.getVirtualFile();
-                return new SourceString(file.getText(), virtualFile == null ? null : virtualFile.getCanonicalPath(), file.getName());
-            });
+            );
             try {
                 return CachedValueProvider.Result.create(doCheckFile(file, manager, isOnTheFly, code, (R) r), file);
             } catch (Throwable e) {
@@ -287,7 +306,8 @@ public abstract class CodeNarcInspectionTool<R extends AbstractRule> extends Loc
         });
 
         Set<InspectionSuppressor> suppressors = new HashSet<>(getSuppressors(element));
-        final PsiLanguageInjectionHost injectionHost = InjectedLanguageManager.getInstance(element.getProject()).getInjectionHost(element);
+        final PsiLanguageInjectionHost injectionHost = InjectedLanguageManager.getInstance(element.getProject())
+            .getInjectionHost(element);
         if (injectionHost != null) {
             Set<InspectionSuppressor> injectionHostSuppressors = new HashSet<>(getSuppressors(injectionHost));
             for (InspectionSuppressor suppressor : injectionHostSuppressors) {
@@ -296,12 +316,21 @@ public abstract class CodeNarcInspectionTool<R extends AbstractRule> extends Loc
         }
 
         for (InspectionSuppressor suppressor : suppressors) {
-            addAllSuppressActions(fixes, element, suppressor, injectionHost != null ? ThreeState.NO : ThreeState.UNSURE, getAlternativeID());
+            addAllSuppressActions(
+                fixes,
+                element,
+                suppressor,
+                injectionHost != null ? ThreeState.NO : ThreeState.UNSURE,
+                getAlternativeID()
+            );
         }
         return fixes.toArray(SuppressQuickFix.EMPTY_ARRAY);
     }
 
-    protected abstract @NotNull Collection<LocalQuickFix> getQuickFixesFor(Violation violation, PsiElement violatingElement);
+    protected abstract @NotNull Collection<LocalQuickFix> getQuickFixesFor(
+        Violation violation,
+        PsiElement violatingElement
+    );
 
     protected void applyDefaultConfiguration(R rule) {
         // allows override the defaults in the subclasses
@@ -309,7 +338,8 @@ public abstract class CodeNarcInspectionTool<R extends AbstractRule> extends Loc
 
     @NotNull
     protected TextRange convertViolationRangeToRelative(PsiElement violatingElement, TextRange violatingRange) {
-        final int relativeRangeStart = violatingElement.getTextRange().getStartOffset() - violatingRange.getStartOffset();
+        final int relativeRangeStart = violatingElement.getTextRange().getStartOffset() -
+            violatingRange.getStartOffset();
         final int relativeRangeEnd = violatingElement.getTextRange().getEndOffset() - violatingRange.getStartOffset();
         return new TextRange(Math.max(0, relativeRangeStart), relativeRangeEnd);
     }
@@ -330,7 +360,10 @@ public abstract class CodeNarcInspectionTool<R extends AbstractRule> extends Loc
         if (StringUtil.isNotEmpty(sourceLine)) {
             int violationPosition = violatedLine.indexOf(sourceLine);
             int violationStart = Math.max(startOffset + violationPosition, 0);
-            int violationEnd = Math.min(startOffset + violationPosition + sourceLine.length(), document.getTextLength() - 1);
+            int violationEnd = Math.min(
+                startOffset + violationPosition + sourceLine.length(),
+                document.getTextLength() - 1
+            );
             return new TextRange(violationStart, violationEnd);
         }
 
@@ -373,7 +406,13 @@ public abstract class CodeNarcInspectionTool<R extends AbstractRule> extends Loc
     }
 
     @Nullable
-    private ProblemDescriptor[] doCheckFile(@NotNull PsiFile file, @NotNull InspectionManager manager, boolean isOnTheFly, SourceCode code, R r) throws Throwable {
+    private ProblemDescriptor[] doCheckFile(
+        @NotNull PsiFile file,
+        @NotNull InspectionManager manager,
+        boolean isOnTheFly,
+        SourceCode code,
+        R r
+    ) throws Throwable {
         if (code == null) {
             return null;
         }
@@ -400,7 +439,9 @@ public abstract class CodeNarcInspectionTool<R extends AbstractRule> extends Loc
         try {
             return list
                     .stream()
-                    .map(violation -> convertViolationToProblemDescriptor(file, manager, isOnTheFly, r, document, violation))
+                    .map(violation ->
+                        convertViolationToProblemDescriptor(file, manager, isOnTheFly, r, document, violation)
+                    )
                     .filter(Objects::nonNull)
                     .toArray(ProblemDescriptor[]::new);
         } catch (Throwable error) {
@@ -408,20 +449,31 @@ public abstract class CodeNarcInspectionTool<R extends AbstractRule> extends Loc
                 LOG.info("Process cancelled!", error);
                 return null;
             }
-            throw new IllegalStateException("Exception validating file " + file + " by rule " + r + " with code\n" + code, error);
+            throw new IllegalStateException(
+                "Exception validating file " + file + " by rule " + r + " with code\n" + code,
+                error
+            );
         }
 
 
     }
 
     @Nullable
-    private ProblemDescriptor convertViolationToProblemDescriptor(@NotNull PsiFile file, @NotNull InspectionManager manager, boolean isOnTheFly, R r, Document document, Violation violation) {
+    private ProblemDescriptor convertViolationToProblemDescriptor(
+        @NotNull PsiFile file,
+        @NotNull InspectionManager manager,
+        boolean isOnTheFly,
+        R r,
+        Document document,
+        Violation violation
+    ) {
         final TextRange violatingRange = extractViolatingRange(document, violation);
         final PsiElement violatingElement = extractViolatingElement(file, violatingRange);
 
         if (
-            violatingElement == null || isSuppressedFor(violatingElement) ||
+            violatingElement == null || isSuppressedFor(violatingElement) || (
                 DisabledRulesService.getInstance().isRuleDisabled(violation.getRule(), file, violation.getLineNumber())
+            )
         ) {
             return null;
         }
@@ -448,10 +500,18 @@ public abstract class CodeNarcInspectionTool<R extends AbstractRule> extends Loc
         return hasErrorsCachedValue;
     }
 
-    private <T> T computeCachedDataIfAbsent(@NotNull PsiFile file, CachedValuesManager cachedValuesManager, Key<CachedValue<T>> key, Supplier<T> supplier) {
+    private <T> T computeCachedDataIfAbsent(
+        @NotNull PsiFile file,
+        CachedValuesManager cachedValuesManager,
+        Key<CachedValue<T>> key,
+        Supplier<T> supplier
+    ) {
         CachedValue<T> cachedValue = file.getUserData(key);
         if (cachedValue == null) {
-            cachedValue = cachedValuesManager.createCachedValue(() -> CachedValueProvider.Result.create(supplier.get(), file), false);
+            cachedValue = cachedValuesManager.createCachedValue(
+                () -> CachedValueProvider.Result.create(supplier.get(), file),
+                false
+            );
             file.putUserData(key, cachedValue);
         }
         return cachedValue.getValue();

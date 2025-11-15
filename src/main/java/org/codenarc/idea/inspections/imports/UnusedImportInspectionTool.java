@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Collections;
 import javax.annotation.Generated;
 import org.codenarc.idea.CodeNarcInspectionTool;
+import org.codenarc.idea.quickfix.DeleteElementQuickFix;
 import org.codenarc.rule.Violation;
 import org.codenarc.rule.imports.UnusedImportRule;
 import org.jetbrains.annotations.NotNull;
@@ -32,7 +33,7 @@ public class UnusedImportInspectionTool extends CodeNarcInspectionTool<UnusedImp
 
     @Override
     protected @NotNull Collection<LocalQuickFix> getQuickFixesFor(Violation violation, PsiElement violatingElement) {
-        return Collections.emptyList();
+        return Collections.singleton(new DeleteElementQuickFix(violatingElement));
     }
 
 }

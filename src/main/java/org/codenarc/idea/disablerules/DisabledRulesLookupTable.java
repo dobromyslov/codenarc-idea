@@ -31,7 +31,7 @@ class DisabledRulesLookupTable {
     }
 
     private void buildLookupTable(@NotNull String sourceCode) {
-        var lineNumber = new AtomicInteger(1);
+        var lineNumber = new AtomicInteger(0);
         sourceCode.lines().forEach(line -> {
             checkForCodeNarcDisable(line);
             checkForCodeNarcEnable(line);

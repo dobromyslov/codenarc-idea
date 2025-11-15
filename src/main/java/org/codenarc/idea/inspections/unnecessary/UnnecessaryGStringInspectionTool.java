@@ -7,6 +7,8 @@ import java.util.Collection;
 import java.util.Collections;
 import javax.annotation.Generated;
 import org.codenarc.idea.CodeNarcInspectionTool;
+import org.codenarc.idea.quickfix.ConvertGStringToStringReusableIntention;
+import org.codenarc.idea.quickfix.IntentionQuickFix;
 import org.codenarc.rule.Violation;
 import org.codenarc.rule.unnecessary.UnnecessaryGStringRule;
 import org.jetbrains.annotations.NotNull;
@@ -50,7 +52,7 @@ public class UnnecessaryGStringInspectionTool extends CodeNarcInspectionTool<Unn
 
     @Override
     protected @NotNull Collection<LocalQuickFix> getQuickFixesFor(Violation violation, PsiElement violatingElement) {
-        return Collections.emptyList();
+      return Collections.singleton(IntentionQuickFix.from(new ConvertGStringToStringReusableIntention()));
     }
 
 }
