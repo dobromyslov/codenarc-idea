@@ -33,7 +33,7 @@ To run the plugin locally in IDEA:
 
 ## Build
 
-To build the plugin run `./gradlew build`.
+To build the plugin run `./gradlew buildPlugin`.
 Take the file from `build/distributions/codenarc-idea-7.0.1-SNAPSHOT.zip` and install it in IDEA.
 
 ## Upgrading CodeNarc
@@ -42,7 +42,7 @@ Take the file from `build/distributions/codenarc-idea-7.0.1-SNAPSHOT.zip` and in
 2. Regenerate the IDEA inspection classes from CodeNarc with `./gradlew run`
    - existing inspection classes manual removal from `org.codenarc.idea.inspections` might be required
 3. Test `./gradlew test --info --stacktrace`
-4. Build `./gradlew build`
+4. Build `./gradlew buildPlugin`
 5. Take the file from `build/distributions/codenarc-idea-7.0.0-SNAPSHOT.zip` and install it in IDEA.
 
 ## History

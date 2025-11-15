@@ -12,7 +12,7 @@ jobs:
       fail-fast: false # we need to know which version is failing
       matrix:
         version:
-          - "-PideVersion=IC-2025.2"
+          - "-PideVersion=2025.2"
     steps:
       - uses: actions/checkout@v1
 
@@ -23,7 +23,7 @@ jobs:
           distribution: zulu
       - uses: gradle/gradle-build-action@v2
         with:
-          arguments: test runPluginVerifier ${{ matrix.version }} --stacktrace
+          arguments: test verifyPlugin ${{ matrix.version }} --stacktrace
       - name: Show Reports
         uses: actions/upload-artifact@v4
         if: failure()
