@@ -9,7 +9,8 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     env:
-      GRADLE_OPTS: "-Xmx6g -Xms4g"
+      GRADLE_OPTS: "-Xmx6g -Xms4g -Dorg.gradle.daemon=false"
+      CI: true
     steps:
       - name: Set current date as env variable
         run: echo "SNAPSHOT_SUFFIX=$(date +'%Y%m%d%H%M')" >> $GITHUB_ENV
