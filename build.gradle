@@ -154,13 +154,11 @@ runIde {
     jvmArgs "-Xmx2g"
 }
 
-/*
 runPluginVerifier {
     ideVersions = [
-            idePlatformVersion
+        idePlatformVersion
     ]
 }
- */
 
 /*
 patchPluginXml {
