@@ -27,11 +27,11 @@ class DisabledRulesLookupTable {
 
     boolean isRuleDisabledForLine(@NotNull Rule rule, int lineNumber) {
         var disabledRules = disabledRulesByLine.get(lineNumber);
-        return disabledRules.contains(ALL_RULES) || disabledRules.contains(rule.getName());
+        return disabledRules != null && (disabledRules.contains(ALL_RULES) || disabledRules.contains(rule.getName()));
     }
 
     private void buildLookupTable(@NotNull String sourceCode) {
-        var lineNumber = new AtomicInteger(0);
+        var lineNumber = new AtomicInteger(1);
         sourceCode.lines().forEach(line -> {
             checkForCodeNarcDisable(line);
             checkForCodeNarcEnable(line);

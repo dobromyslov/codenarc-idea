@@ -24,7 +24,7 @@ public class DisabledRulesService {
 
     public boolean isRuleDisabled(@NotNull Rule rule, @NotNull PsiFile file, Integer lineNumber) {
         if (lineNumber == null) {
-            lineNumber = 0;
+            lineNumber = 1;
         }
 
         return getDisabledRulesLookupTable(file).isRuleDisabledForLine(rule, lineNumber);
