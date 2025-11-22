@@ -25,7 +25,7 @@ idea {
         jdkName = '17'
     }
     module {
-        downloadSources = !providers.environmentVariable('CI').forUseAtConfigurationTime().present
+        downloadSources = !System.getenv('CI') || System.getenv('CI').toLowerCase() == 'false'
     }
 }
 
