@@ -1,6 +1,6 @@
 # CodeNarc IntelliJ Plugin
 
-## Version 7.0.3
+## Version 7.0.4
 
 New features:
 - Compatible with IntelliJ IDEA 2025.2+ (based on IntelliJ Plugins v2):
@@ -8,8 +8,8 @@ New features:
   - Automated tests reworked to use the new API
 - [CodeNarc 3.6.0](https://github.com/CodeNarc/CodeNarc/releases/tag/v3.6.0)
   - Supports [Disabling rules from comments](https://codenarc.org/codenarc-configuring-rules.html#disabling-rules-from-comments)
-- Gradle 9.2.0
 - Groovy 4+
+- Gradle 9.2.0
 - Default run configuration for debugging the plugin in IDEA
 
 ## Running tests
