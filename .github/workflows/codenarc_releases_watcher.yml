@@ -38,8 +38,8 @@ jobs:
           commit-message: Upgraded to CodeNarc ${{ steps.xpath.outputs.result }}
           title: '[Upgrade] Upgraded to the CodeNarc ${{ steps.xpath.outputs.result }}'
           body: |
-            There is a newer version ${{ steps.xpath.outputs.result }} of CodeNarc available. The dependency has been updated and the inspection tools
-            have been regenerated.
+            There is a newer version ${{ steps.xpath.outputs.result }} of CodeNarc available. The dependency has been 
+            updated and the inspection tools have been regenerated.
           labels: chore,upgrade
           assignees: musketyr
           branch: upgrade/codenarc
