@@ -11,7 +11,7 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     env:
-      GRADLE_OPTS: "-Xmx6g -Xms4g -Dorg.gradle.daemon=false"
+      GRADLE_OPTS: "-Xmx6g -Xms4g"
       CI: true
     steps:
       - name: Checkout source
@@ -31,8 +31,4 @@ jobs:
           BETA_SUFFIX=$(date +%Y%m%d%H%M%S)
           echo "BETA_VERSION=${PLUGIN_VERSION}-${BETA_SUFFIX}" >> $GITHUB_ENV
       - name: Build and publish to JetBrains Marketplace Beta channel with Gradle
-        run: |
-          ./gradlew publishPlugin \ 
-            -PpublishPluginChannels=beta \ 
-            -PpluginVersion=${{ env.BETA_VERSION }} \
-            -PpublishPluginToken=${{ secrets.JB_PLUGINS_TOKEN }}
+        run: ./gradlew publishPlugin --no-daemon -PpublishPluginChannels=beta -PpluginVersion=${{ env.BETA_VERSION }} -PpublishPluginToken=${{ secrets.JB_PLUGINS_TOKEN }}

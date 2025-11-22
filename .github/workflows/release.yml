@@ -10,7 +10,7 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     env:
-      GRADLE_OPTS: "-Xmx6g -Xms4g -Dorg.gradle.daemon=false"
+      GRADLE_OPTS: "-Xmx6g -Xms4g"
       CI: true
     steps:
       - name: Checkout source
@@ -23,7 +23,4 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
       - name: Build and publish to JetBrains Marketplace Stable channel with Gradle
-        run: |
-          ./gradlew publishPlugin \
-            -PpluginVersion=${{ github.ref_name }} \
-            -PpublishPluginToken=${{ secrets.JB_PLUGINS_TOKEN }}
+        run: ./gradlew publishPlugin --no-daemon -PpluginVersion=${{ github.ref_name }} -PpublishPluginToken=${{ secrets.JB_PLUGINS_TOKEN }}
