@@ -24,6 +24,9 @@ idea {
     project {
         jdkName = '17'
     }
+    module {
+        downloadSources = !providers.environmentVariable('CI').forUseAtConfigurationTime().present
+    }
 }
 
 sourceSets.create 'generator', {
@@ -120,17 +123,6 @@ dependencies {
 
 logger.lifecycle("Using IDE version $ideVersion")
 
-/*
-intellij {
-    pluginName = 'CodeNarc'
-
-    downloadSources = !providers.environmentVariable('CI').forUseAtConfigurationTime().present
-    plugins = ['Groovy', 'gradle', 'java']
-    version = idePlatformVersion
-    instrumentCode = false
-}
- */
-
 publishPlugin {
     token = System.getenv('JETBRAINS_MARKETPLACE_TOKEN')
     if (publishPluginChannels) {
@@ -140,6 +132,12 @@ publishPlugin {
 
 runIde {
     jvmArgs "-Xmx2g"
+}
+
+intellijPlatform {
+    pluginConfiguration {
+        name = 'CodeNarc'
+    }
 }
 
 intellijPlatform.pluginVerification {
