@@ -14,13 +14,6 @@ jobs:
       GRADLE_OPTS: "-Xmx6g -Xms4g -Dorg.gradle.daemon=false"
       CI: true
     steps:
-      - name: Set dynamic Beta version
-        id: version_step
-        run: |
-          # Expected result example: BETA_VERSION=7.0.1-20220126120000
-          PLUGIN_VERSION=$(grep 'pluginVersion' gradle.properties | awk -F'=' '{print $2}' | tr -d '[:space:]')
-          BETA_SUFFIX=$(date +%Y%m%d%H%M%S)
-          echo "BETA_VERSION=${PLUGIN_VERSION}-${BETA_SUFFIX}" >> $GITHUB_ENV
       - name: Checkout source
         uses: actions/checkout@v6
       - name: Set up Java
@@ -30,6 +23,13 @@ jobs:
           java-version: 17
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v3
+      - name: Set dynamic Beta version
+        id: version_step
+        run: |
+          # Expected result example: BETA_VERSION=7.0.1-20220126120000
+          PLUGIN_VERSION=$(grep 'pluginVersion' gradle.properties | awk -F'=' '{print $2}' | tr -d '[:space:]')
+          BETA_SUFFIX=$(date +%Y%m%d%H%M%S)
+          echo "BETA_VERSION=${PLUGIN_VERSION}-${BETA_SUFFIX}" >> $GITHUB_ENV
       - name: Build and publish to JetBrains Marketplace Beta channel with Gradle
         run: |
           ./gradlew publishPlugin \ 
