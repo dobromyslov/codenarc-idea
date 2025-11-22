@@ -16,12 +16,12 @@ New features:
 
 Run all tests:
 ```bash
-./gradlew test --info --stacktrace
+./gradlew clean test --info --stacktrace
 ```
 
 Run a single specific test:
 ```bash
-./gradlew test --tests "*UnnecessaryDotClassInspectionToolSpec" --info --stacktrace
+./gradlew clean test --tests "*UnnecessaryDotClassInspectionToolSpec" --info --stacktrace
 ```
 
 ## Running local IDEA
@@ -33,8 +33,8 @@ To run the plugin locally in IDEA:
 
 ## Build
 
-To build the plugin run `./gradlew buildPlugin`.
-Take the file from `build/distributions/codenarc-idea-7.0.1-SNAPSHOT.zip` and install it in IDEA.
+To build the plugin run `./gradlew clean buildPlugin`.
+Take the file from `build/distributions/codenarc-idea-7.0.4.zip` and install it in IDEA.
 
 ## Upgrading CodeNarc
 
@@ -43,7 +43,7 @@ Take the file from `build/distributions/codenarc-idea-7.0.1-SNAPSHOT.zip` and in
    - existing inspection classes manual removal from `org.codenarc.idea.inspections` might be required
 3. Test `./gradlew test --info --stacktrace`
 4. Build `./gradlew buildPlugin`
-5. Take the file from `build/distributions/codenarc-idea-7.0.0-SNAPSHOT.zip` and install it in IDEA.
+5. Take the file from `build/distributions/codenarc-idea-7.0.4.zip` and install it in IDEA.
 
 ## History
 
