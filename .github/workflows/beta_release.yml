@@ -13,6 +13,7 @@ jobs:
     env:
       GRADLE_OPTS: "-Xmx6g -Xms4g"
       CI: true
+      JETBRAINS_MARKETPLACE_TOKEN: ${{ secrets.JB_PLUGINS_TOKEN }}
     steps:
       - name: Checkout source
         uses: actions/checkout@v6
@@ -31,4 +32,4 @@ jobs:
           BETA_SUFFIX=$(date +%Y%m%d%H%M%S)
           echo "BETA_VERSION=${PLUGIN_VERSION}-${BETA_SUFFIX}" >> $GITHUB_ENV
       - name: Build and publish to JetBrains Marketplace Beta channel with Gradle
-        run: ./gradlew publishPlugin --no-daemon -PpublishPluginChannels=beta -PpluginVersion=${{ env.BETA_VERSION }} -PpublishPluginToken=${{ secrets.JB_PLUGINS_TOKEN }}
+        run: ./gradlew publishPlugin --no-daemon -PpublishPluginChannels=beta -PpluginVersion=${{ env.BETA_VERSION }}

@@ -10,10 +10,6 @@ plugins {
     id 'application'
 }
 
-if (!project.hasProperty('publishPluginChannels')) ext.publishPluginChannels = ''
-if (!project.hasProperty('publishPluginToken')) ext.publishPluginToken = '**UNDEFINED**'
-if (!project.hasProperty('ideVersion')) ext.ideVersion = '2025.2'
-
 project.group = 'org.codenarc.idea'
 project.version = ext.pluginVersion
 
@@ -136,7 +132,7 @@ intellij {
  */
 
 publishPlugin {
-    token = publishPluginToken
+    token = System.getenv('JETBRAINS_MARKETPLACE_TOKEN')
     if (publishPluginChannels) {
         channels = Arrays.asList(publishPluginChannels.split(','))
     }
