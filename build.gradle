@@ -139,8 +139,6 @@ publishPlugin {
     channels = publishPluginChannels
         ? publishPluginChannels
         : []
-
-    logger.error("Channels: ${channels.get()}")
 }
 
 runIde {
