@@ -22,7 +22,7 @@ wrapper {
 
 idea {
     project {
-        jdkName = '17'
+        jdkName = '21'
     }
     module {
         downloadSources = !System.getenv('CI') || System.getenv('CI').toLowerCase() == 'false'
